@@ -3,55 +3,90 @@ import json
 from requests.auth import HTTPBasicAuth
 from getpass import getpass
 
-# User prompts
-# Ask the user for the Token name
-gh_token_name = input("Enter the name of the GitHub Token to be rotated: ")
+def get_current_tokens(username, password, otp, token):
+    """
+    Use the GitHub API to return a current list of all the associated Tokens
+    for the given user.
+    """
+    authorizations = requests.get(
+        'https://api.github.com/authorizations',
+        auth=HTTPBasicAuth(username, password),
+        headers={'x-github-otp': otp}
+    )
+    print("GitHub List of Authorizations:")
+    print(authorizations.json())
+    return authorizations.json()
 
-# Ask the user for their GitHub username
-gh_username = input("Enter your GitHub username: ")
+def get_token_id(username, password, otp, token):
+    """
+    Return the ID for the desired Token defined by user input.
+    """
+    response = get_current_tokens(username, password, otp, token)
+    token_id = None
+    for i in response:
+        if i['app']['name'] == token:
+            token_id = i['id']
+    print("Token ID: " + str(token_id))
+    return token_id
 
-# Ask the user for their GitHub password
-gh_pw = getpass(prompt="Enter your GitHub Password: ")
+def delete_token(username, password, otp, token):
+    """
+    Delete the defined Token ID from the GitHub users Token list.
+    """
+    token_id = get_token_id(username, password, otp, token)
+    delete_authorization = requests.delete(
+        'https://api.github.com/authorizations/' + str(token_id),
+        auth=HTTPBasicAuth(username, password),
+        headers={'x-github-otp': otp}
+    )
+    print("Delete Response:")
+    print(delete_authorization)
+    return delete_authorization
 
-# Ask the user for their GitHub OTP
-gh_otp = input("Enter your GitHub One-Time-Password: ")
+def create_new_token(username, password, otp, token):
+    """
+    Creates a new Token with "repo" & "admin:repo_hook" permissions and returns
+    the new Token value.
+    """
+    new_authorization = requests.post(
+        'https://api.github.com/authorizations',
+        auth=HTTPBasicAuth(username, password),
+        headers={'x-github-otp': otp},
+        data='{"scopes":["repo", "admin:repo_hook"], "note": "%s"}' % token
+    )
+    print("New GitHub Token:")
+    print(new_authorization.json())
+    print(new_authorization.json()['token'])
+    return new_authorization.json()
 
+def main():
+    """
+    This script assumes that the defined GitHub user is utilizing Multi-Factor
+    Authentication, therefore you will also need to define a One-Time-Password
+    to pass along with the username and password.
 
-# Search for "test" Token
-authorizations = requests.get(
-    'https://api.github.com/authorizations',
-    auth=HTTPBasicAuth(gh_username, gh_pw),
-    headers={'x-github-otp': gh_otp}
-)
-print("GitHub List of Authorizations:")
-print(authorizations.json())
+    This script grab a current list of the current available tokens listed by
+    the defined GitHub user.
 
-# Print current ID that matches desired App Name
-response = authorizations.json()
-token_id = None
-for i in response:
-    if i['app']['name'] == gh_token_name:
-        token_id = i['id']
-print("Token ID: " + str(token_id))
+    It will then search through this list and grab the ID for the matching
+    token name as defined by the user input.
 
+    The matching Token ID will then be deleted from the users account.
 
-# Delete "test" Token
-delete_authorization = requests.delete(
-    'https://api.github.com/authorizations/' + str(token_id),
-    auth=HTTPBasicAuth(gh_username, gh_pw),
-    headers={'x-github-otp': gh_otp}
-)
-print("Delete Response:")
-print(delete_authorization)
+    Finally, a new Token will be created with permissions needed for AWS
+    CodePipeline.
+    """
 
+    # User prompts
+    gh_token_name = input("Enter the name of the GitHub Token to be rotated: ")
+    gh_username = input("Enter your GitHub username: ")
+    gh_pw = getpass(prompt="Enter your GitHub Password: ")
+    gh_otp = input("Enter your GitHub One-Time-Password: ")
+    
+    get_current_tokens(gh_username, gh_pw, gh_otp, gh_token_name)
+    get_token_id(gh_username, gh_pw, gh_otp, gh_token_name)
+    delete_token(gh_username, gh_pw, gh_otp, gh_token_name)
+    create_new_token(gh_username, gh_pw, gh_otp, gh_token_name)
 
-# Create new "test" Token
-new_authorization = requests.post(
-    'https://api.github.com/authorizations',
-    auth=HTTPBasicAuth(gh_username, gh_pw),
-    headers={'x-github-otp': gh_otp},
-    data='{"scopes":["repo", "admin:repo_hook"], "note": "%s"}' % gh_token_name
-)
-print("New GitHub Token:")
-print(new_authorization.json())
-print(new_authorization.json()['token'])
+if __name__ == "__main__":
+    main()
