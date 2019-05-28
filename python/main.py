@@ -4,7 +4,10 @@ from requests.auth import HTTPBasicAuth
 from getpass import getpass
 
 def get_current_tokens(username, password, otp, token):
-    # Search for "test" Token
+    """
+    Use the GitHub API to return a current list of all the associated Tokens
+    for the given user.
+    """
     authorizations = requests.get(
         'https://api.github.com/authorizations',
         auth=HTTPBasicAuth(username, password),
@@ -15,7 +18,9 @@ def get_current_tokens(username, password, otp, token):
     return authorizations.json()
 
 def get_token_id(username, password, otp, token):
-    # Print current ID that matches desired App Name
+    """
+    Return the ID for the desired Token defined by user input.
+    """
     response = get_current_tokens(username, password, otp, token)
     token_id = None
     for i in response:
@@ -25,7 +30,9 @@ def get_token_id(username, password, otp, token):
     return token_id
 
 def delete_token(username, password, otp, token):
-    # Delete "test" Token
+    """
+    Delete the defined Token ID from the GitHub users Token list.
+    """
     token_id = get_token_id(username, password, otp, token)
     delete_authorization = requests.delete(
         'https://api.github.com/authorizations/' + str(token_id),
@@ -37,7 +44,10 @@ def delete_token(username, password, otp, token):
     return delete_authorization
 
 def create_new_token(username, password, otp, token):
-    # Create new "test" Token
+    """
+    Creates a new Token with "repo" & "admin:repo_hook" permissions and returns
+    the new Token value.
+    """
     new_authorization = requests.post(
         'https://api.github.com/authorizations',
         auth=HTTPBasicAuth(username, password),
@@ -50,22 +60,32 @@ def create_new_token(username, password, otp, token):
     return new_authorization.json()
 
 def main():
+    """
+    This script assumes that the defined GitHub user is utilizing Multi-Factor
+    Authentication, therefore you will also need to define a One-Time-Password
+    to pass along with the username and password.
+
+    This script grab a current list of the current available tokens listed by
+    the defined GitHub user.
+
+    It will then search through this list and grab the ID for the matching
+    token name as defined by the user input.
+
+    The matching Token ID will then be deleted from the users account.
+
+    Finally, a new Token will be created with permissions needed for AWS
+    CodePipeline.
+    """
+
     # User prompts
     gh_token_name = input("Enter the name of the GitHub Token to be rotated: ")
     gh_username = input("Enter your GitHub username: ")
     gh_pw = getpass(prompt="Enter your GitHub Password: ")
     gh_otp = input("Enter your GitHub One-Time-Password: ")
     
-    # Collect all current Tokens
     get_current_tokens(gh_username, gh_pw, gh_otp, gh_token_name)
-
-    # Get defined Token ID
     get_token_id(gh_username, gh_pw, gh_otp, gh_token_name)
-
-    # Delete defined Token
     delete_token(gh_username, gh_pw, gh_otp, gh_token_name)
-
-    # Create new Token
     create_new_token(gh_username, gh_pw, gh_otp, gh_token_name)
 
 if __name__ == "__main__":
