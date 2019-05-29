@@ -101,10 +101,16 @@ def codepipeline_get_pipeline(client, pipeline_name):
     # Remove 'metadata' & 'ResponseMetadata'
     response = response.pop('pipeline')
 
-    print("")
-    print("Get CodePipeline:")
-    print(response)
-    return response
+    if isinstance(response, dict):
+        print("")
+        print("Get CodePipeline:")
+        print(response)
+        return response
+    else:
+        print("")
+        print("Get CodePipeline is not a dict!")
+        print(response)
+        sys.exit()
 
 def update_response_token_info(client, username, pipeline_name, new_token):
     response = codepipeline_get_pipeline(client, pipeline_name)
@@ -121,9 +127,16 @@ def update_response_token_info(client, username, pipeline_name, new_token):
             if action['configuration'].get('Owner', None):
                 action['configuration']['Owner'] = username
 
-    print("Updated CodePipeline with New Token")
-    print(response)
-    return response
+    if isinstance(response, dict):
+        print("")
+        print("Adjusted pipeline template with new Token")
+        print(response)
+        return response
+    else:
+        print("")
+        print("Not able to adjust pipeline template with new Token!")
+        print(response)
+        sys.exit()
 
 def codepipeline_update_pipeline(client, username, pipeline_name, new_token):
     updated_pipeline = update_response_token_info(
@@ -135,6 +148,7 @@ def codepipeline_update_pipeline(client, username, pipeline_name, new_token):
     response = client.update_pipeline(
         pipeline=updated_pipeline
     )
+
     print("")
     print("Update CodePipeline:")
     print(response)
