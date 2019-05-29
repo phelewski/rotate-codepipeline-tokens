@@ -82,14 +82,22 @@ def codepipeline_get_pipeline(client):
     print(response)
     return response
 
-def update_response_token_info(client, username):
+def update_response_token_info(client, username, new_token):
+    print("")
+    print("update_response_token_info client")
+    print(client)
+    print("update_response_token_info username")
+    print(username)
+    print("update_response_token_info new_token")
+    print(new_token)
+
     response = codepipeline_get_pipeline(client)
 
     # Update the OAuthToken
     for stage in response['stages']:
         for action in stage['actions']:
             if action['configuration'].get('OAuthToken', None):
-                action['configuration']['OAuthToken'] = 'PETER_UPDATED_TOKEN' # TODO:
+                action['configuration']['OAuthToken'] = new_token
     
     # Update the GitHub username
     for stage in response['stages']:
@@ -97,13 +105,12 @@ def update_response_token_info(client, username):
             if action['configuration'].get('Owner', None):
                 action['configuration']['Owner'] = username
 
-    print("")
     print("Updated CodePipeline with New Token")
     print(response)
     return response
 
-def codepipeline_update_pipeline(client, username):
-    updated_pipeline = update_response_token_info(client, username)
+def codepipeline_update_pipeline(client, username, new_token):
+    updated_pipeline = update_response_token_info(client, username, new_token)
     response = client.update_pipeline(
         pipeline=updated_pipeline
     )
@@ -138,16 +145,17 @@ def main():
     gh_otp = input("Enter your GitHub One-Time-Password: ")
     
     # GitHub Actions
-    get_current_tokens(gh_username, gh_pw, gh_otp, gh_token_name)
-    get_token_id(gh_username, gh_pw, gh_otp, gh_token_name)
+    # get_current_tokens(gh_username, gh_pw, gh_otp, gh_token_name)
+    # get_token_id(gh_username, gh_pw, gh_otp, gh_token_name)
     delete_token(gh_username, gh_pw, gh_otp, gh_token_name)
-    create_new_token(gh_username, gh_pw, gh_otp, gh_token_name)
+    # create_new_token(gh_username, gh_pw, gh_otp, gh_token_name)
 
     # CodePipeline Actions
     client = boto3.client('codepipeline')
-    codepipeline_get_pipeline(client)
-    update_response_token_info(client, gh_username)
-    codepipeline_update_pipeline(client, gh_username)
+    # new_token = create_new_token(gh_username, gh_pw, gh_otp, gh_token_name)
+    # codepipeline_get_pipeline(client)
+    # update_response_token_info(client, gh_username, new_token)
+    codepipeline_update_pipeline(client, gh_username, create_new_token(gh_username, gh_pw, gh_otp, gh_token_name))
 
 if __name__ == "__main__":
     main()
