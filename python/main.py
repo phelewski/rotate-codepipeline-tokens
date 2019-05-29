@@ -81,14 +81,17 @@ def create_new_token(username, password, otp, token):
         data='{"scopes":["repo", "admin:repo_hook"], "note": "%s"}' % token
     )
 
-    new_token = new_authorization.json()['token']
-
-    print("")
-    print("New GitHub Token:")
-    print(new_authorization.json())
-    print(new_token)
-    # return new_authorization.json()['token']
-    return new_token
+    if new_authorization.status_code == 201:
+        new_token = new_authorization.json()['token']
+        print("")
+        print(f"Successfully Created a new the GitHub Authorization Token")
+        print(f"New GitHub Token: {new_token}")
+        return new_token
+    else:
+        print("")
+        print(f"Could not create a new GitHub Authorization token!")
+        print(new_authorization.json())
+        sys.exit()
 
 def codepipeline_get_pipeline(client, pipeline_name):
     response = client.get_pipeline(
