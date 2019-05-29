@@ -68,9 +68,9 @@ def create_new_token(username, password, otp, token):
     # return new_authorization.json()['token']
     return new_token
 
-def codepipeline_get_pipeline(client):
+def codepipeline_get_pipeline(client, pipeline_name):
     response = client.get_pipeline(
-        name='peter-demo-sam-pipeline' # TODO:
+        name=pipeline_name
     )
 
     # Remove 'metadata' & 'ResponseMetadata'
@@ -81,8 +81,8 @@ def codepipeline_get_pipeline(client):
     print(response)
     return response
 
-def update_response_token_info(client, username, new_token):
-    response = codepipeline_get_pipeline(client)
+def update_response_token_info(client, username, pipeline_name, new_token):
+    response = codepipeline_get_pipeline(client, pipeline_name)
 
     # Update the OAuthToken
     for stage in response['stages']:
@@ -100,8 +100,13 @@ def update_response_token_info(client, username, new_token):
     print(response)
     return response
 
-def codepipeline_update_pipeline(client, username, new_token):
-    updated_pipeline = update_response_token_info(client, username, new_token)
+def codepipeline_update_pipeline(client, username, pipeline_name, new_token):
+    updated_pipeline = update_response_token_info(
+        client,
+        username,
+        pipeline_name,
+        new_token
+    )
     response = client.update_pipeline(
         pipeline=updated_pipeline
     )
@@ -130,6 +135,7 @@ def main():
     """
 
     # User prompts
+    codepipeline_name = input("Enter the name of the CodePipeline to update: ")
     gh_token_name = input("Enter the name of the GitHub Token to be rotated: ")
     gh_username = input("Enter your GitHub username: ")
     gh_pw = getpass(prompt="Enter your GitHub Password: ")
@@ -140,7 +146,11 @@ def main():
 
     # CodePipeline Actions
     client = boto3.client('codepipeline')
-    codepipeline_update_pipeline(client, gh_username, create_new_token(
+    codepipeline_update_pipeline(
+        client,
+        gh_username,
+        codepipeline_name,
+        create_new_token(
         gh_username,
         gh_pw,
         gh_otp,
