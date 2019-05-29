@@ -64,7 +64,6 @@ def create_new_token(username, password, otp, token):
     print("")
     print("New GitHub Token:")
     print(new_authorization.json())
-    print(new_authorization.json()['token'])
     print(new_token)
     # return new_authorization.json()['token']
     return new_token
@@ -83,14 +82,6 @@ def codepipeline_get_pipeline(client):
     return response
 
 def update_response_token_info(client, username, new_token):
-    print("")
-    print("update_response_token_info client")
-    print(client)
-    print("update_response_token_info username")
-    print(username)
-    print("update_response_token_info new_token")
-    print(new_token)
-
     response = codepipeline_get_pipeline(client)
 
     # Update the OAuthToken
@@ -135,7 +126,7 @@ def main():
     new Token will be created with permissions needed for AWS CodePipeline.
 
     Afterwards the defined CodePipeline will be updated to utilize the new
-    GitHub Token.
+    GitHub Token and associated username.
     """
 
     # User prompts
@@ -145,17 +136,16 @@ def main():
     gh_otp = input("Enter your GitHub One-Time-Password: ")
     
     # GitHub Actions
-    # get_current_tokens(gh_username, gh_pw, gh_otp, gh_token_name)
-    # get_token_id(gh_username, gh_pw, gh_otp, gh_token_name)
     delete_token(gh_username, gh_pw, gh_otp, gh_token_name)
-    # create_new_token(gh_username, gh_pw, gh_otp, gh_token_name)
 
     # CodePipeline Actions
     client = boto3.client('codepipeline')
-    # new_token = create_new_token(gh_username, gh_pw, gh_otp, gh_token_name)
-    # codepipeline_get_pipeline(client)
-    # update_response_token_info(client, gh_username, new_token)
-    codepipeline_update_pipeline(client, gh_username, create_new_token(gh_username, gh_pw, gh_otp, gh_token_name))
+    codepipeline_update_pipeline(client, gh_username, create_new_token(
+        gh_username,
+        gh_pw,
+        gh_otp,
+        gh_token_name
+    ))
 
 if __name__ == "__main__":
     main()
