@@ -22,6 +22,7 @@ def get_current_tokens(username, password, otp, token):
         print(authorizations.json())
         return authorizations.json()
     else:
+        print("")
         print("Could not get current list of GitHub tokens!")
         print(authorizations.json())
         sys.exit()
@@ -36,9 +37,15 @@ def get_token_id(username, password, otp, token):
     for i in response:
         if i['app']['name'] == token:
             token_id = i['id']
-    print("")
-    print("Token ID: " + str(token_id))
-    return token_id
+
+    if token_id != None:
+        print("")
+        print(f"Token ID: {token_id}")
+        return token_id
+    else:
+        print("")
+        print(f"GitHub token name does not exist!")
+        sys.exit()
 
 def delete_token(username, password, otp, token):
     """
@@ -50,10 +57,17 @@ def delete_token(username, password, otp, token):
         auth=HTTPBasicAuth(username, password),
         headers={'x-github-otp': otp}
     )
-    print("")
-    print("Delete Response:")
-    print(delete_authorization)
-    return delete_authorization
+
+    if delete_authorization.status_code == 204:
+        print("")
+        print(f"Successfully Deleted the GitHub Authorization {token_id}")
+        print(delete_authorization)
+        return delete_authorization
+    else:
+        print("")
+        print(f"Could not delete the GitHub Authorization token: {token_id}!")
+        print(delete_authorization)
+        sys.exit()
 
 def create_new_token(username, password, otp, token):
     """
