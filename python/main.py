@@ -149,10 +149,16 @@ def codepipeline_update_pipeline(client, username, pipeline_name, new_token):
         pipeline=updated_pipeline
     )
 
-    print("")
-    print("Update CodePipeline:")
-    print(response)
-    return response
+    if response['ResponseMetadata']['HTTPStatusCode'] == 200:
+        print("")
+        print("Successfully updated CodePipeline with the new Token")
+        print(response)
+        return response
+    else:
+        print("")
+        print("Unable to update CodePipeline with the new Token!")
+        print(response)
+        sys.exit()
 
 def main():
     """
