@@ -1,6 +1,7 @@
 import requests
 import json
 import boto3
+import sys
 from requests.auth import HTTPBasicAuth
 from getpass import getpass
 
@@ -14,10 +15,17 @@ def get_current_tokens(username, password, otp, token):
         auth=HTTPBasicAuth(username, password),
         headers={'x-github-otp': otp}
     )
-    print("")
-    print("GitHub List of Authorizations:")
-    print(authorizations.json())
-    return authorizations.json()
+
+    if authorizations.status_code == 200:
+        print("")
+        print("GitHub List of Authorizations:")
+        print(authorizations.json())
+        return authorizations.json()
+    else:
+        print("Could not get current list of GitHub tokens!")
+        print(authorizations.json())
+        sys.exit()
+
 
 def get_token_id(username, password, otp, token):
     """
@@ -151,11 +159,11 @@ def main():
         gh_username,
         codepipeline_name,
         create_new_token(
-        gh_username,
-        gh_pw,
-        gh_otp,
-        gh_token_name
-    ))
+            gh_username,
+            gh_pw,
+            gh_otp,
+            gh_token_name
+        ))
 
 if __name__ == "__main__":
     main()
