@@ -62,11 +62,11 @@ def delete_token(username, password, otp, token):
         print(f"Successfully Deleted the GitHub Authorization {token_id}")
         print(delete_authorization)
         return delete_authorization
-    else:
-        print("")
-        print(f"Could not delete the GitHub Authorization token: {token_id}!")
-        print(delete_authorization)
-        sys.exit()
+
+    print("")
+    print(f"Could not delete the GitHub Authorization token: {token_id}!")
+    print(delete_authorization)
+    raise Exception(f"Could not delete the GitHub Authorization token: {token_id}!")
 
 def create_new_token(username, password, otp, token):
     """
