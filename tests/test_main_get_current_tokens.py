@@ -7,19 +7,19 @@ from src.rotate_codepipeline_tokens.main import get_current_tokens
 
 @pytest.fixture
 def username():
-    return 'test_username'
+    return 'foo_username'
 
 @pytest.fixture
 def password():
-    return 'test_password'
+    return 'bar_password'
 
 @pytest.fixture
 def otp():
-    return 123456
+    return 'baz_otp'
 
 @pytest.fixture
 def token():
-    return 'test_token'
+    return 'qux_token'
 
 class MockResponse(object):
     '''
@@ -33,19 +33,52 @@ class MockResponse(object):
         return self.body
 
 @mock.patch('requests.get')
-def test_get_current_tokens_status_code_200(mock_api, username, password, otp, token):
+def test_get_current_tokens_status_code_200(
+    mock_api,
+    username,
+    password,
+    otp,
+    token
+):
 
     mock_api.return_value = MockResponse(200, [{
         'id': 'foobar',
         'url': 'https://api.github.com/authorizations/123456789'
     }])
 
+
+    mock_api.return_value = MockResponse(200, [{
+        'id': 123456789,
+        'url': 'https://api.github.com/authorizations/123456789',
+        'app': {
+            'name': 'foobar',
+            'url': 'https://developer.github.com/v3/oauth_authorizations/',
+            'client_id': '00000000000000000000'
+        },
+        'token': '',
+        'hashed_token': \
+            '12ab34cd56ef78gh90ij12lm34no56pq78rs90tu12vw34xy56za78bc90de12fg',
+        'token_last_eight': '90de12fg',
+        'note': 'foobar',
+        'note_url': None,
+        'created_at': '2019-05-30T15:21:24Z',
+        'updated_at': '2019-05-30T15:21:24Z',
+        'scopes': ['repo', 'admin:repo_hook'],
+        'fingerprint': None
+    }])
+
     authorizations = get_current_tokens(username, password, otp, token)
     assert mock_api.called
-    assert authorizations[0]['id'] == 'foobar'
+    assert authorizations[0]['id'] == 123456789
 
 @mock.patch('requests.get')
-def test_get_current_tokens_status_code_401(mock_api, username, password, otp, token):
+def test_get_current_tokens_status_code_401(
+    mock_api,
+    username,
+    password,
+    otp,
+    token
+):
 
     mock_api.return_value = MockResponse(401, [])
     with pytest.raises(Exception) as e:
