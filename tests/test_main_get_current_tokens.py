@@ -42,12 +42,6 @@ def test_get_current_tokens_status_code_200(
 ):
 
     mock_api.return_value = MockResponse(200, [{
-        'id': 'foobar',
-        'url': 'https://api.github.com/authorizations/123456789'
-    }])
-
-
-    mock_api.return_value = MockResponse(200, [{
         'id': 123456789,
         'url': 'https://api.github.com/authorizations/123456789',
         'app': {
