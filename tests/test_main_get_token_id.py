@@ -66,7 +66,7 @@ def test_get_token_id_exists(
     assert response == 123456789
 
 @mock.patch('requests.get')
-def test_get_current_tokens_status_code_401(
+def test_get_token_id_does_not_exist(
     mock_api,
     username,
     password,
