@@ -94,8 +94,9 @@ def test_get_token_id_does_not_exist(
         'fingerprint': None
     }])
 
-    with pytest.raises(Exception) as e:
-        get_token_id(username, password, otp, token)
+    with pytest.raises(
+        Exception,
+        match="GitHub token name does not exist!"
+    ):
+        assert get_token_id(username, password, otp, token)
         assert mock_api.called
-        assert str(e) == "GitHub token name does not exist!"
-

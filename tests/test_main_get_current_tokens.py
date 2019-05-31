@@ -75,8 +75,10 @@ def test_get_current_tokens_status_code_401(
 ):
 
     mock_api.return_value = MockResponse(401, [])
-    with pytest.raises(Exception) as e:
-        get_current_tokens(username, password, otp, token)
-        assert mock_api.called
-        assert str(e) == 'Could not get current list of GitHub tokens!'
 
+    with pytest.raises(
+        Exception,
+        match="Could not get current list of GitHub tokens!"
+    ):
+        assert get_current_tokens(username, password, otp, token)
+        assert mock_api.called

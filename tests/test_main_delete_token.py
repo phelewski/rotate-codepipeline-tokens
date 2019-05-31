@@ -108,3 +108,5 @@ def test_delete_token_status_code_404(
         match="Could not delete the GitHub Authorization token: foobar!"
     ):
         assert delete_token(username, password, otp, token)
+        assert mock_delete.called
+        assert mock_get.called
