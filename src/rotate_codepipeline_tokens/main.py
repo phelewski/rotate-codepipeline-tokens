@@ -85,12 +85,26 @@ def create_new_token(username, password, otp, token):
         print("")
         print(f"Successfully Created a new the GitHub Authorization Token")
         print(f"New GitHub Token: {new_token}")
-        return new_token
-    else:
-        print("")
-        print(f"Could not create a new GitHub Authorization token!")
         print(new_authorization.json())
-        sys.exit()
+        return new_token
+    elif new_authorization.status_code == 401:
+        print("")
+        print("Unable to create new Token. Check user credentials!")
+        print(new_authorization.json())
+        print(new_authorization.status_code)
+        raise Exception("Unable to create new Token. Check user credentials!")
+    elif new_authorization.status_code == 422:
+        print("")
+        print("Unable to create new Token. Token already exists!")
+        print(new_authorization.json())
+        print(new_authorization.status_code)
+        raise Exception("Unable to create new Token. Token already exists!")
+
+    print("")
+    print("Could not create a new GitHub Authorization token!")
+    print(new_authorization.json())
+    print(new_authorization.status_code)
+    raise Exception("Could not create a new GitHub Authorization token!")
 
 def codepipeline_get_pipeline(client, pipeline_name):
     response = client.get_pipeline(
@@ -186,7 +200,7 @@ def main():
     gh_otp = input("Enter your GitHub One-Time-Password: ")
     
     # GitHub Actions
-    delete_token(gh_username, gh_pw, gh_otp, gh_token_name)
+    # delete_token(gh_username, gh_pw, gh_otp, gh_token_name)
 
     # CodePipeline Actions
     client = boto3.client('codepipeline')
