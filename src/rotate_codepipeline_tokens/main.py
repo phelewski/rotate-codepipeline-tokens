@@ -41,10 +41,10 @@ def get_token_id(username, password, otp, token):
         print("")
         print(f"Token ID: {token_id}")
         return token_id
-    else:
-        print("")
-        print(f"GitHub token name does not exist!")
-        sys.exit()
+
+    print("")
+    print("GitHub token name does not exist!")
+    raise Exception("GitHub token name does not exist!")
 
 def delete_token(username, password, otp, token):
     """
