@@ -97,6 +97,21 @@ def test_codepipeline_get_pipeline_type_is_dict(
     assert isinstance(response, dict)
 
 @mock.patch('botocore.client.BaseClient._make_request')
+def test_codepipeline_get_pipeline_type_is_not_dict(
+    mock_boto,
+    pipeline_name
+):
+
+    mock_boto.return_value = MockResponse(200, {'pipeline': 'foo'})
+
+    with pytest.raises(
+        Exception,
+        match="Get CodePipeline is not a dict!"
+    ):
+        assert codepipeline_get_pipeline(boto3.client('codepipeline'), pipeline_name)
+        assert mock_boto.called
+
+@mock.patch('botocore.client.BaseClient._make_request')
 def test_codepipeline_get_pipeline_name_type_is_str(
     mock_boto,
     pipeline_name
