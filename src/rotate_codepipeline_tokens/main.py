@@ -118,12 +118,14 @@ def codepipeline_get_pipeline(client, pipeline_name):
         print("")
         print("Get CodePipeline:")
         print(response)
+        print("codepipeline_get_pipeline - client")
+        print(client)
         return response
-    else:
-        print("")
-        print("Get CodePipeline is not a dict!")
-        print(response)
-        sys.exit()
+
+    print("")
+    print("Get CodePipeline is not a dict!")
+    print(response)
+    raise Exception("Get CodePipeline is not a dict!")
 
 def update_response_token_info(client, username, pipeline_name, new_token):
     response = codepipeline_get_pipeline(client, pipeline_name)
@@ -200,7 +202,7 @@ def main():
     gh_otp = input("Enter your GitHub One-Time-Password: ")
     
     # GitHub Actions
-    # delete_token(gh_username, gh_pw, gh_otp, gh_token_name)
+    delete_token(gh_username, gh_pw, gh_otp, gh_token_name)
 
     # CodePipeline Actions
     client = boto3.client('codepipeline')
