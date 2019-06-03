@@ -133,25 +133,19 @@ def update_response_token_info(client, username, pipeline_name, new_token):
     # Update the OAuthToken
     for stage in response['stages']:
         for action in stage['actions']:
-            if action['configuration'].get('OAuthToken', None):
-                action['configuration']['OAuthToken'] = new_token
-    
-    # Update the GitHub username
-    for stage in response['stages']:
-        for action in stage['actions']:
-            if action['configuration'].get('Owner', None):
-                action['configuration']['Owner'] = username
+            if action['configuration'].get('OAuthToken', None) \
+                and action['configuration'].get('Owner', None):
+                    action['configuration']['OAuthToken'] = new_token
+                    action['configuration']['Owner'] = username
+                    print("")
+                    print("Adjusted pipeline template with new Token")
+                    print(response)
+                    return response
 
-    if isinstance(response, dict):
-        print("")
-        print("Adjusted pipeline template with new Token")
-        print(response)
-        return response
-    else:
-        print("")
-        print("Not able to adjust pipeline template with new Token!")
-        print(response)
-        sys.exit()
+    print("")
+    print("Not able to adjust pipeline template with new Token!")
+    print(response)
+    raise Exception("Not able to adjust pipeline template with new Token!")
 
 def codepipeline_update_pipeline(client, username, pipeline_name, new_token):
     updated_pipeline = update_response_token_info(
