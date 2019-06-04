@@ -163,11 +163,11 @@ def codepipeline_update_pipeline(client, username, pipeline_name, new_token):
         print("Successfully updated CodePipeline with the new Token")
         print(response)
         return response
-    else:
-        print("")
-        print("Unable to update CodePipeline with the new Token!")
-        print(response)
-        sys.exit()
+
+    print("")
+    print("Unable to update CodePipeline with the new Token!")
+    print(response)
+    raise Exception("Unable to update CodePipeline with the new Token!")
 
 def main():
     """
