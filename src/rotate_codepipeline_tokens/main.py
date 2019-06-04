@@ -16,14 +16,8 @@ def get_current_tokens(username, password, otp, token):
         headers={'x-github-otp': otp}
     )
     if authorizations.status_code == 200:
-        print("")
-        print("GitHub List of Authorizations:")
-        print(authorizations.json())
         return authorizations.json()
 
-    print("")
-    print("Could not get current list of GitHub tokens!")
-    print(authorizations.json())
     raise Exception("Could not get current list of GitHub tokens!")
 
 
@@ -38,12 +32,8 @@ def get_token_id(username, password, otp, token):
             token_id = i['id']
 
     if token_id != None:
-        print("")
-        print(f"Token ID: {token_id}")
         return token_id
 
-    print("")
-    print("GitHub token name does not exist!")
     raise Exception("GitHub token name does not exist!")
 
 def delete_token(username, password, otp, token):
@@ -58,14 +48,8 @@ def delete_token(username, password, otp, token):
     )
 
     if delete_authorization.status_code == 204:
-        print("")
-        print(f"Successfully Deleted the GitHub Authorization {token_id}")
-        print(delete_authorization)
         return delete_authorization
 
-    print("")
-    print(f"Could not delete the GitHub Authorization token: {token_id}!")
-    print(delete_authorization)
     raise Exception(f"Could not delete the GitHub Authorization token: {token_id}!")
 
 def create_new_token(username, password, otp, token):
@@ -82,28 +66,12 @@ def create_new_token(username, password, otp, token):
 
     if new_authorization.status_code == 201:
         new_token = new_authorization.json()['token']
-        print("")
-        print(f"Successfully Created a new the GitHub Authorization Token")
-        print(f"New GitHub Token: {new_token}")
-        print(new_authorization.json())
         return new_token
     elif new_authorization.status_code == 401:
-        print("")
-        print("Unable to create new Token. Check user credentials!")
-        print(new_authorization.json())
-        print(new_authorization.status_code)
         raise Exception("Unable to create new Token. Check user credentials!")
     elif new_authorization.status_code == 422:
-        print("")
-        print("Unable to create new Token. Token already exists!")
-        print(new_authorization.json())
-        print(new_authorization.status_code)
         raise Exception("Unable to create new Token. Token already exists!")
 
-    print("")
-    print("Could not create a new GitHub Authorization token!")
-    print(new_authorization.json())
-    print(new_authorization.status_code)
     raise Exception("Could not create a new GitHub Authorization token!")
 
 def codepipeline_get_pipeline(client, pipeline_name):
@@ -115,16 +83,8 @@ def codepipeline_get_pipeline(client, pipeline_name):
     response = response.pop('pipeline')
 
     if isinstance(response, dict):
-        print("")
-        print("Get CodePipeline:")
-        print(response)
-        print("codepipeline_get_pipeline - client")
-        print(client)
         return response
 
-    print("")
-    print("Get CodePipeline is not a dict!")
-    print(response)
     raise Exception("Get CodePipeline is not a dict!")
 
 def update_response_token_info(client, username, pipeline_name, new_token):
@@ -137,14 +97,8 @@ def update_response_token_info(client, username, pipeline_name, new_token):
                 and action['configuration'].get('Owner', None):
                     action['configuration']['OAuthToken'] = new_token
                     action['configuration']['Owner'] = username
-                    print("")
-                    print("Adjusted pipeline template with new Token")
-                    print(response)
                     return response
 
-    print("")
-    print("Not able to adjust pipeline template with new Token!")
-    print(response)
     raise Exception("Not able to adjust pipeline template with new Token!")
 
 def codepipeline_update_pipeline(client, username, pipeline_name, new_token):
@@ -159,14 +113,8 @@ def codepipeline_update_pipeline(client, username, pipeline_name, new_token):
     )
 
     if response['ResponseMetadata']['HTTPStatusCode'] == 200:
-        print("")
-        print("Successfully updated CodePipeline with the new Token")
-        print(response)
         return response
 
-    print("")
-    print("Unable to update CodePipeline with the new Token!")
-    print(response)
     raise Exception("Unable to update CodePipeline with the new Token!")
 
 def main():
