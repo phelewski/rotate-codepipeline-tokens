@@ -35,3 +35,23 @@ Follow these steps to start developing with this project:
 3. `cd` into the repository
 4. Activate virtualenv: `pipenv shell`
 5. Install dependencies: `pipenv install`
+
+### Unit Testing
+
+PyTest is used for unit testing.
+
+From the `pipenv shell`:
+
+```
+python -m pytest
+```
+
+To show the coverage:
+```
+python -m pytest --cov=src
+```
+
+To hide those `urllib3` `DeprecationWarning:` lines:
+```
+python -m pytest --cov=src tests  -W ignore::DeprecationWarning
+```
