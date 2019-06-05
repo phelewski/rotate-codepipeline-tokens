@@ -43,27 +43,39 @@ def test_delete_token_status_code_204(
     token
 ):
 
-    mock_delete.return_value = MockResponse(204, "<Response [204]>")
+    mock_delete.return_value = MockResponse(
+        204,
+        "<Response [204]>"
+    )
 
-    mock_get.return_value = MockResponse(200, [{
-        'id': 123456789,
-        'url': 'https://api.github.com/authorizations/123456789',
-        'app': {
-            'name': 'qux_token',
-            'url': 'https://developer.github.com/v3/oauth_authorizations/',
-            'client_id': '00000000000000000000'
-        },
-        'token': '',
-        'hashed_token': \
-            '12ab34cd56ef78gh90ij12lm34no56pq78rs90tu12vw34xy56za78bc90de12fg',
-        'token_last_eight': '90de12fg',
-        'note': 'qux_token',
-        'note_url': None,
-        'created_at': '2019-05-30T15:21:24Z',
-        'updated_at': '2019-05-30T15:21:24Z',
-        'scopes': ['repo', 'admin:repo_hook'],
-        'fingerprint': None
-    }])
+    mock_get.return_value = MockResponse(
+        200, 
+        [
+            {
+                'id': 123456789,
+                'url': 'https://api.github.com/authorizations/123456789',
+                'app': {
+                    'name': 'qux_token',
+                    'url': \
+                        'https://developer.github.com/v3/oauth_authorizations/',
+                    'client_id': '00000000000000000000'
+                },
+                'token': '',
+                'hashed_token': \
+                    '12ab34cd56ef78gh90ij12lm34no56pq78rs90tu12vw34xy56za78bc9',
+                'token_last_eight': '90de12fg',
+                'note': 'qux_token',
+                'note_url': None,
+                'created_at': '2019-05-30T15:21:24Z',
+                'updated_at': '2019-05-30T15:21:24Z',
+                'scopes': [
+                    'repo',
+                    'admin:repo_hook'
+                ],
+                'fingerprint': None
+            }
+        ]
+    )
 
     delete_authorization = delete_token(username, password, otp, token)
     assert mock_delete.called
@@ -81,27 +93,39 @@ def test_delete_token_status_code_404(
     token
 ):
 
-    mock_delete.return_value = MockResponse(404, "<Response [404]>")
+    mock_delete.return_value = MockResponse(
+        404,
+        "<Response [404]>"
+    )
 
-    mock_get.return_value = MockResponse(200, [{
-        'id': 'foobar',
-        'url': 'https://api.github.com/authorizations/123456789',
-        'app': {
-            'name': 'qux_token',
-            'url': 'https://developer.github.com/v3/oauth_authorizations/',
-            'client_id': '00000000000000000000'
-        },
-        'token': '',
-        'hashed_token': \
-            '12ab34cd56ef78gh90ij12lm34no56pq78rs90tu12vw34xy56za78bc90de12fg',
-        'token_last_eight': '90de12fg',
-        'note': 'qux_token',
-        'note_url': None,
-        'created_at': '2019-05-30T15:21:24Z',
-        'updated_at': '2019-05-30T15:21:24Z',
-        'scopes': ['repo', 'admin:repo_hook'],
-        'fingerprint': None
-    }])
+    mock_get.return_value = MockResponse(
+        200,
+        [
+            {
+                'id': 'foobar',
+                'url': 'https://api.github.com/authorizations/123456789',
+                'app': {
+                    'name': 'qux_token',
+                    'url': \
+                        'https://developer.github.com/v3/oauth_authorizations/',
+                    'client_id': '00000000000000000000'
+                },
+                'token': '',
+                'hashed_token': \
+                    '12ab34cd56ef78gh90ij12lm34no56pq78rs90tu12vw34xy56za78bc9',
+                'token_last_eight': '90de12fg',
+                'note': 'qux_token',
+                'note_url': None,
+                'created_at': '2019-05-30T15:21:24Z',
+                'updated_at': '2019-05-30T15:21:24Z',
+                'scopes': [
+                    'repo',
+                    'admin:repo_hook'
+                ],
+                'fingerprint': None
+            }
+        ]
+    )
 
     with pytest.raises(
         Exception,

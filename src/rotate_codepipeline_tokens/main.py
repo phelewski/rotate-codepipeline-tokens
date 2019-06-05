@@ -50,7 +50,9 @@ def delete_token(username, password, otp, token):
     if delete_authorization.status_code == 204:
         return delete_authorization
 
-    raise Exception(f"Could not delete the GitHub Authorization token: {token_id}!")
+    raise Exception(
+        f"Could not delete the GitHub Authorization token: {token_id}!"
+    )
 
 def create_new_token(username, password, otp, token):
     """
@@ -113,6 +115,7 @@ def codepipeline_update_pipeline(client, username, pipeline_name, new_token):
     )
 
     if response['ResponseMetadata']['HTTPStatusCode'] == 200:
+        print("Successfully updated CodePipeline with the new Token")
         return response
 
     raise Exception("Unable to update CodePipeline with the new Token!")
