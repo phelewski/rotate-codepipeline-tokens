@@ -48,127 +48,156 @@ def test_codepipeline_update_pipeline_httpstatuscode_is_200(
     pipeline_name
 ):
 
-    mock_boto.return_value = MockResponse(200, {'pipeline': {
-        'name': 'foo_pipeline_name',
-        'roleArn': \
-            'arn:aws:iam::123456789012:role/' \
-            'bar_project_CodePipelineServiceRo-ABC123DEF456',
-        'artifactStore': {
-            'type': 'S3',
-            'location': 'bar_project_artifactstorebucket-abc123def456'
-        },
-        'stages': [{
-            'name': 'Source',
-            'actions': [{
-                'name': 'SourceAction',
-                'actionTypeId': {
-                    'category': 'Source',
-                    'owner': 'ThirdParty',
-                    'provider': 'GitHub',
-                    'version': '1'
-                },
-                'runOrder': 1,
-                'configuration': {
-                    'Branch': 'foo_branch',
-                    'OAuthToken': 'foobar_token',
-                    'Owner': 'bar_owner',
-                    'PollForSourceChanges': 'false',
-                    'Repo': 'baz_repo'
-                },
-                'outputArtifacts': [{
-                    'name': 'SourceOutput'
-                }],
-                'inputArtifacts': []
-            }]
-        },
+    mock_boto.return_value = MockResponse(
+        200,
         {
-            'name': 'Build',
-            'actions': [{
-                'name': 'BuildAction',
-                'actionTypeId': {
-                    'category': 'Build',
-                    'owner': 'AWS',
-                    'provider': 'CodeBuild',
-                    'version': '1'
+            'pipeline': {
+                'name': 'foo_pipeline_name',
+                'roleArn': \
+                    'arn:aws:iam::123456789012:role/' \
+                    'bar_project_CodePipelineServiceRo-ABC123DEF456',
+                'artifactStore': {
+                    'type': 'S3',
+                    'location': 'bar_project_artifactstorebucket-abc123def456'
                 },
-                'runOrder': 1,
-                'configuration': {
-                    'ProjectName': 'FooCodeBuildProject-aBc123DeF456'
+                'stages': [
+                    {
+                        'name': 'Source',
+                        'actions': [
+                            {
+                                'name': 'SourceAction',
+                                'actionTypeId': {
+                                    'category': 'Source',
+                                    'owner': 'ThirdParty',
+                                    'provider': 'GitHub',
+                                    'version': '1'
+                                },
+                                'runOrder': 1,
+                                'configuration': {
+                                    'Branch': 'foo_branch',
+                                    'OAuthToken': 'foobar_token',
+                                    'Owner': 'bar_owner',
+                                    'PollForSourceChanges': 'false',
+                                    'Repo': 'baz_repo'
+                                },
+                                'outputArtifacts': [
+                                    {
+                                        'name': 'SourceOutput'
+                                    }
+                                ],
+                                'inputArtifacts': []
+                            }
+                        ]
+                    },
+                    {
+                        'name': 'Build',
+                        'actions': [
+                            {
+                                'name': 'BuildAction',
+                                'actionTypeId': {
+                                    'category': 'Build',
+                                    'owner': 'AWS',
+                                    'provider': 'CodeBuild',
+                                    'version': '1'
+                                },
+                                'runOrder': 1,
+                                'configuration': {
+                                    'ProjectName': \
+                                        'FooCodeBuildProject-aBc123DeF456'
+                                },
+                                'outputArtifacts': [],
+                                'inputArtifacts': [
+                                    {
+                                        'name': 'SourceOutput'
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                'version': 1
+            },
+            'ResponseMetadata': {
+                'RequestId': 'abcd1234-12ab-34cd-56ef-abcdef123456',
+                'HTTPStatusCode': 200,
+                'HTTPHeaders': {
+                    'x-amzn-requestid': 'abcd1234-12ab-34cd-56ef-abcdef123456',
+                    'content-type': 'application/x-amz-json-1.1',
+                    'content-length': '986'
                 },
-                'outputArtifacts': [],
-                'inputArtifacts': [{
-                    'name': 'SourceOutput'
-                }]
-            }]
-        }],
-        'version': 1
-    },
-    'ResponseMetadata': {
-        'RequestId': 'abcd1234-12ab-34cd-56ef-abcdef123456',
-        'HTTPStatusCode': 200,
-        'HTTPHeaders': {
-            'x-amzn-requestid': 'abcd1234-12ab-34cd-56ef-abcdef123456',
-            'content-type': 'application/x-amz-json-1.1',
-            'content-length': '986'
-        },
-        'RetryAttempts': 0
-    }})
+                'RetryAttempts': 0
+            }
+        }
+    )
 
-    mock_update.return_value = dict({
-        'name': 'foo_pipeline_name',
-        'roleArn': \
-            'arn:aws:iam::123456789012:role/' \
-            'bar_project_CodePipelineServiceRo-ABC123DEF456',
-        'artifactStore': {
-            'type': 'S3',
-            'location': 'bar_project_artifactstorebucket-abc123def456'
-        },
-        'stages': [{
-            'name': 'Source',
-            'actions': [{
-                'name': 'SourceAction',
-                'actionTypeId': {
-                    'category': 'Source',
-                    'owner': 'ThirdParty',
-                    'provider': 'GitHub',
-                    'version': '1'
-                },
-                'runOrder': 1,
-                'configuration': {
-                    'Branch': 'foo_branch',
-                    'OAuthToken': '****',
-                    'Owner': 'bar_owner',
-                    'PollForSourceChanges': 'false',
-                    'Repo': 'baz_repo'
-                },
-                'outputArtifacts': [{
-                    'name': 'SourceOutput'
-                }],
-                'inputArtifacts': []
-            }]
-        },
+    mock_update.return_value = dict(
         {
-            'name': 'Build',
-            'actions': [{
-                'name': 'BuildAction',
-                'actionTypeId': {
-                    'category': 'Build',
-                    'owner': 'AWS',
-                    'provider': 'CodeBuild',
-                    'version': '1'
+            'name': 'foo_pipeline_name',
+            'roleArn': \
+                'arn:aws:iam::123456789012:role/' \
+                'bar_project_CodePipelineServiceRo-ABC123DEF456',
+            'artifactStore': {
+                'type': 'S3',
+                'location': 'bar_project_artifactstorebucket-abc123def456'
+            },
+            'stages': [
+                {
+                    'name': 'Source',
+                    'actions': [
+                        {
+                            'name': 'SourceAction',
+                            'actionTypeId': {
+                                'category': 'Source',
+                                'owner': 'ThirdParty',
+                                'provider': 'GitHub',
+                                'version': '1'
+                            },
+                            'runOrder': 1,
+                            'configuration': {
+                                'Branch': 'foo_branch',
+                                'OAuthToken': '****',
+                                'Owner': 'bar_owner',
+                                'PollForSourceChanges': 'false',
+                                'Repo': 'baz_repo'
+                            },
+                            'outputArtifacts': [
+                                {
+                                    'name': 'SourceOutput'
+                                }
+                            ],
+                            'inputArtifacts': []
+                        }
+                    ]
                 },
-                'runOrder': 1,
-                'configuration': {
-                    'ProjectName': 'FooCodeBuildProject-aBc123DeF456'
-                },
-                'outputArtifacts': [],
-                'inputArtifacts': [{
-                    'name': 'SourceOutput'
-                }]
-            }]
-        }],
-        'version': 1
-    })
+                {
+                    'name': 'Build',
+                    'actions': [
+                        {
+                            'name': 'BuildAction',
+                            'actionTypeId': {
+                                'category': 'Build',
+                                'owner': 'AWS',
+                                'provider': 'CodeBuild',
+                                'version': '1'
+                            },
+                            'runOrder': 1,
+                            'configuration': {
+                                'ProjectName': \
+                                    'FooCodeBuildProject-aBc123DeF456'
+                            },
+                            'outputArtifacts': [],
+                            'inputArtifacts': [
+                                {
+                                    'name': 'SourceOutput'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            'version': 1
+        }
+    )
 
     response = codepipeline_update_pipeline(
         boto3.client('codepipeline'),
@@ -189,127 +218,156 @@ def test_codepipeline_update_pipeline_httpstatuscode_is_400(
     pipeline_name
 ):
 
-    mock_boto.return_value = MockResponse(200, {'pipeline': {
-        'name': 'foo_pipeline_name',
-        'roleArn': \
-            'arn:aws:iam::123456789012:role/' \
-            'bar_project_CodePipelineServiceRo-ABC123DEF456',
-        'artifactStore': {
-            'type': 'S3',
-            'location': 'bar_project_artifactstorebucket-abc123def456'
-        },
-        'stages': [{
-            'name': 'Source',
-            'actions': [{
-                'name': 'SourceAction',
-                'actionTypeId': {
-                    'category': 'Source',
-                    'owner': 'ThirdParty',
-                    'provider': 'GitHub',
-                    'version': '1'
-                },
-                'runOrder': 1,
-                'configuration': {
-                    'Branch': 'foo_branch',
-                    'OAuthToken': 'foobar_token',
-                    'Owner': 'bar_owner',
-                    'PollForSourceChanges': 'false',
-                    'Repo': 'baz_repo'
-                },
-                'outputArtifacts': [{
-                    'name': 'SourceOutput'
-                }],
-                'inputArtifacts': []
-            }]
-        },
+    mock_boto.return_value = MockResponse(
+        200,
         {
-            'name': 'Build',
-            'actions': [{
-                'name': 'BuildAction',
-                'actionTypeId': {
-                    'category': 'Build',
-                    'owner': 'AWS',
-                    'provider': 'CodeBuild',
-                    'version': '1'
+            'pipeline': {
+                'name': 'foo_pipeline_name',
+                'roleArn': \
+                    'arn:aws:iam::123456789012:role/' \
+                    'bar_project_CodePipelineServiceRo-ABC123DEF456',
+                'artifactStore': {
+                    'type': 'S3',
+                    'location': 'bar_project_artifactstorebucket-abc123def456'
                 },
-                'runOrder': 1,
-                'configuration': {
-                    'ProjectName': 'FooCodeBuildProject-aBc123DeF456'
+                'stages': [
+                    {
+                        'name': 'Source',
+                        'actions': [
+                            {
+                                'name': 'SourceAction',
+                                'actionTypeId': {
+                                    'category': 'Source',
+                                    'owner': 'ThirdParty',
+                                    'provider': 'GitHub',
+                                    'version': '1'
+                                },
+                                'runOrder': 1,
+                                'configuration': {
+                                    'Branch': 'foo_branch',
+                                    'OAuthToken': 'foobar_token',
+                                    'Owner': 'bar_owner',
+                                    'PollForSourceChanges': 'false',
+                                    'Repo': 'baz_repo'
+                                },
+                                'outputArtifacts': [
+                                    {
+                                        'name': 'SourceOutput'
+                                    }
+                                ],
+                                'inputArtifacts': []
+                            }
+                        ]
+                    },
+                    {
+                        'name': 'Build',
+                        'actions': [
+                            {
+                                'name': 'BuildAction',
+                                'actionTypeId': {
+                                    'category': 'Build',
+                                    'owner': 'AWS',
+                                    'provider': 'CodeBuild',
+                                    'version': '1'
+                                },
+                                'runOrder': 1,
+                                'configuration': {
+                                    'ProjectName': \
+                                        'FooCodeBuildProject-aBc123DeF456'
+                                },
+                                'outputArtifacts': [],
+                                'inputArtifacts': [
+                                    {
+                                        'name': 'SourceOutput'
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                'version': 1
+            },
+            'ResponseMetadata': {
+                'RequestId': 'abcd1234-12ab-34cd-56ef-abcdef123456',
+                'HTTPStatusCode': 400,
+                'HTTPHeaders': {
+                    'x-amzn-requestid': 'abcd1234-12ab-34cd-56ef-abcdef123456',
+                    'content-type': 'application/x-amz-json-1.1',
+                    'content-length': '986'
                 },
-                'outputArtifacts': [],
-                'inputArtifacts': [{
-                    'name': 'SourceOutput'
-                }]
-            }]
-        }],
-        'version': 1
-    },
-    'ResponseMetadata': {
-        'RequestId': 'abcd1234-12ab-34cd-56ef-abcdef123456',
-        'HTTPStatusCode': 400,
-        'HTTPHeaders': {
-            'x-amzn-requestid': 'abcd1234-12ab-34cd-56ef-abcdef123456',
-            'content-type': 'application/x-amz-json-1.1',
-            'content-length': '986'
-        },
-        'RetryAttempts': 0
-    }})
+                'RetryAttempts': 0
+            }
+        }
+    )
 
-    mock_update.return_value = dict({
-        'name': 'foo_pipeline_name',
-        'roleArn': \
-            'arn:aws:iam::123456789012:role/' \
-            'bar_project_CodePipelineServiceRo-ABC123DEF456',
-        'artifactStore': {
-            'type': 'S3',
-            'location': 'bar_project_artifactstorebucket-abc123def456'
-        },
-        'stages': [{
-            'name': 'Source',
-            'actions': [{
-                'name': 'SourceAction',
-                'actionTypeId': {
-                    'category': 'Source',
-                    'owner': 'ThirdParty',
-                    'provider': 'GitHub',
-                    'version': '1'
-                },
-                'runOrder': 1,
-                'configuration': {
-                    'Branch': 'foo_branch',
-                    'OAuthToken': '****',
-                    'Owner': 'bar_owner',
-                    'PollForSourceChanges': 'false',
-                    'Repo': 'baz_repo'
-                },
-                'outputArtifacts': [{
-                    'name': 'SourceOutput'
-                }],
-                'inputArtifacts': []
-            }]
-        },
+    mock_update.return_value = dict(
         {
-            'name': 'Build',
-            'actions': [{
-                'name': 'BuildAction',
-                'actionTypeId': {
-                    'category': 'Build',
-                    'owner': 'AWS',
-                    'provider': 'CodeBuild',
-                    'version': '1'
+            'name': 'foo_pipeline_name',
+            'roleArn': \
+                'arn:aws:iam::123456789012:role/' \
+                'bar_project_CodePipelineServiceRo-ABC123DEF456',
+            'artifactStore': {
+                'type': 'S3',
+                'location': 'bar_project_artifactstorebucket-abc123def456'
+            },
+            'stages': [
+                {
+                    'name': 'Source',
+                    'actions': [
+                        {
+                            'name': 'SourceAction',
+                            'actionTypeId': {
+                                'category': 'Source',
+                                'owner': 'ThirdParty',
+                                'provider': 'GitHub',
+                                'version': '1'
+                            },
+                            'runOrder': 1,
+                            'configuration': {
+                                'Branch': 'foo_branch',
+                                'OAuthToken': '****',
+                                'Owner': 'bar_owner',
+                                'PollForSourceChanges': 'false',
+                                'Repo': 'baz_repo'
+                            },
+                            'outputArtifacts': [
+                                {
+                                    'name': 'SourceOutput'
+                                }
+                            ],
+                            'inputArtifacts': []
+                        }
+                    ]
                 },
-                'runOrder': 1,
-                'configuration': {
-                    'ProjectName': 'FooCodeBuildProject-aBc123DeF456'
-                },
-                'outputArtifacts': [],
-                'inputArtifacts': [{
-                    'name': 'SourceOutput'
-                }]
-            }]
-        }],
-        'version': 1
-    })
+                {
+                    'name': 'Build',
+                    'actions': [
+                        {
+                            'name': 'BuildAction',
+                            'actionTypeId': {
+                                'category': 'Build',
+                                'owner': 'AWS',
+                                'provider': 'CodeBuild',
+                                'version': '1'
+                            },
+                            'runOrder': 1,
+                            'configuration': {
+                                'ProjectName': \
+                                    'FooCodeBuildProject-aBc123DeF456'
+                            },
+                            'outputArtifacts': [],
+                            'inputArtifacts': [
+                                {
+                                    'name': 'SourceOutput'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            'version': 1
+        }
+    )
 
     with pytest.raises(
         Exception,

@@ -41,25 +41,34 @@ def test_get_token_id_exists(
     token
 ):
 
-    mock_api.return_value = MockResponse(200, [{
-        'id': 123456789,
-        'url': 'https://api.github.com/authorizations/123456789',
-        'app': {
-            'name': 'qux_token',
-            'url': 'https://developer.github.com/v3/oauth_authorizations/',
-            'client_id': '00000000000000000000'
-        },
-        'token': '',
-        'hashed_token': \
-            '12ab34cd56ef78gh90ij12lm34no56pq78rs90tu12vw34xy56za78bc90de12fg',
-        'token_last_eight': '90de12fg',
-        'note': 'qux_token',
-        'note_url': None,
-        'created_at': '2019-05-30T15:21:24Z',
-        'updated_at': '2019-05-30T15:21:24Z',
-        'scopes': ['repo', 'admin:repo_hook'],
-        'fingerprint': None
-    }])
+    mock_api.return_value = MockResponse(
+        200,
+        [
+            {
+                'id': 123456789,
+                'url': 'https://api.github.com/authorizations/123456789',
+                'app': {
+                    'name': 'qux_token',
+                    'url': \
+                        'https://developer.github.com/v3/oauth_authorizations/',
+                    'client_id': '00000000000000000000'
+                },
+                'token': '',
+                'hashed_token': \
+                    '12ab34cd56ef78gh90ij12lm34no56pq78rs90tu12vw34xy56za78bc9',
+                'token_last_eight': '90de12fg',
+                'note': 'qux_token',
+                'note_url': None,
+                'created_at': '2019-05-30T15:21:24Z',
+                'updated_at': '2019-05-30T15:21:24Z',
+                'scopes': [
+                    'repo',
+                    'admin:repo_hook'
+                ],
+                'fingerprint': None
+            }
+        ]
+    )
 
     response = get_token_id(username, password, otp, token)
     assert mock_api.called
@@ -74,25 +83,34 @@ def test_get_token_id_does_not_exist(
     token
 ):
 
-    mock_api.return_value = MockResponse(200, [{
-        'id': 123456789,
-        'url': 'https://api.github.com/authorizations/123456789',
-        'app': {
-            'name': 'foobar',
-            'url': 'https://developer.github.com/v3/oauth_authorizations/',
-            'client_id': '00000000000000000000'
-        },
-        'token': '',
-        'hashed_token': \
-            '12ab34cd56ef78gh90ij12lm34no56pq78rs90tu12vw34xy56za78bc90de12fg',
-        'token_last_eight': '90de12fg',
-        'note': 'foobar',
-        'note_url': None,
-        'created_at': '2019-05-30T15:21:24Z',
-        'updated_at': '2019-05-30T15:21:24Z',
-        'scopes': ['repo', 'admin:repo_hook'],
-        'fingerprint': None
-    }])
+    mock_api.return_value = MockResponse(
+        200,
+        [
+            {
+                'id': 123456789,
+                'url': 'https://api.github.com/authorizations/123456789',
+                'app': {
+                    'name': 'foobar',
+                    'url': \
+                        'https://developer.github.com/v3/oauth_authorizations/',
+                    'client_id': '00000000000000000000'
+                },
+                'token': '',
+                'hashed_token': \
+                    '12ab34cd56ef78gh90ij12lm34no56pq78rs90tu12vw34xy56za78bc9',
+                'token_last_eight': '90de12fg',
+                'note': 'foobar',
+                'note_url': None,
+                'created_at': '2019-05-30T15:21:24Z',
+                'updated_at': '2019-05-30T15:21:24Z',
+                'scopes': [
+                    'repo',
+                    'admin:repo_hook'
+                ],
+                'fingerprint': None
+            }
+        ]
+    )
 
     with pytest.raises(
         Exception,
@@ -110,25 +128,34 @@ def test_get_token_id_type_is_int(
     token
 ):
 
-    mock_api.return_value = MockResponse(200, [{
-        'id': 123456789,
-        'url': 'https://api.github.com/authorizations/123456789',
-        'app': {
-            'name': 'qux_token',
-            'url': 'https://developer.github.com/v3/oauth_authorizations/',
-            'client_id': '00000000000000000000'
-        },
-        'token': '',
-        'hashed_token': \
-            '12ab34cd56ef78gh90ij12lm34no56pq78rs90tu12vw34xy56za78bc90de12fg',
-        'token_last_eight': '90de12fg',
-        'note': 'qux_token',
-        'note_url': None,
-        'created_at': '2019-05-30T15:21:24Z',
-        'updated_at': '2019-05-30T15:21:24Z',
-        'scopes': ['repo', 'admin:repo_hook'],
-        'fingerprint': None
-    }])
+    mock_api.return_value = MockResponse(
+        200,
+        [
+            {
+                'id': 123456789,
+                'url': 'https://api.github.com/authorizations/123456789',
+                'app': {
+                    'name': 'qux_token',
+                    'url': \
+                        'https://developer.github.com/v3/oauth_authorizations/',
+                    'client_id': '00000000000000000000'
+                },
+                'token': '',
+                'hashed_token': \
+                    '12ab34cd56ef78gh90ij12lm34no56pq78rs90tu12vw34xy56za78bc9',
+                'token_last_eight': '90de12fg',
+                'note': 'qux_token',
+                'note_url': None,
+                'created_at': '2019-05-30T15:21:24Z',
+                'updated_at': '2019-05-30T15:21:24Z',
+                'scopes': [
+                    'repo',
+                    'admin:repo_hook'
+                ],
+                'fingerprint': None
+            }
+        ]
+    )
 
     response = get_token_id(username, password, otp, token)
     assert mock_api.called
